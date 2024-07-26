@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách học sinh</title>
+    <meta charset="UTF-8">
+    <th:block th:replace="~{common/template::linkBootstrap}">
+    </th:block>
+</head>
+<body>
+<nav th:replace="~{common/template::navbar}">
+
+</nav>
+<div class="container">
+    <p style="color: blue" th:text="${message}"></p>
+    <button class="btn btn-primary mt-4" onclick="window.location.href='/student/create'">Thêm</button>
+    <form action="/student">
+        <input class="form-control" th:value="${nameStudent}" name="nameStudent" style="width: 50%">
+        <button type="submit" class="btn btn-info">Tìm kiếm</button>
+    </form>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Số thứ tự</th>
+            <th>Mã</th>
+            <th>Họ và tên</th>
+            <th>Địa chỉ</th>
+            <th>Điểm</th>
+            <th>Học lực</th>
+            <th>Lớp</th>
+            <th>Thêm vào room trò chuyện bí mật</th>
+            <th>Chức năng</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student, iterStat: ${students}">
+            <td th:text="${iterStat.count}"></td>
+            <td th:text="${student.id}"></td>
+            <td th:text="${student.name}"></td>
+            <td th:text="${student.address}"></td>
+            <td th:text="${student.score}"></td>
+            <td>
+                <span th:if="${student.score >=8}">Giỏi</span>
+                <span th:if="${student.score >=6.5 && student.score < 8}">Khá</span>
+                <span th:if="${student.score >=5 && student.score < 6.5}">Trung Bình</span>
+                <span th:if="${student.score >=3.5 && student.score < 5}">Yếu</span>
+                <span th:if="${student.score < 3.5}">Kém</span>
+
+            </td>
+            <td th:text="${student.classroom.name}"></td>
+            <td><button class="btn btn-danger"
+                        th:onclick="'window.location.href = \'' + @{/student/talk/{id}(id=${student.id})} + '\''">Thêm</button></td>
+            <td>
+                <button class="btn btn-warning"
+                        th:onclick="'window.location.href = \'' + @{/student/update/{id}(id=${student.id})} + '\''">Sửa
+                </button>
+                <button class="btn btn-danger">Xóa
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:if="${students.hasPrevious()}">
+                <a class="page-link" th:href="@{/student(page=${students.number - 1}, nameStudent=${nameStudent})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+
+                </a>
+            </li>
+            <li class="page-item" th:if="${students.hasNext()}">
+                <a class="page-link" th:href="@{/student(page=${students.number + 1}, nameStudent=${nameStudent})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+
+</html>
